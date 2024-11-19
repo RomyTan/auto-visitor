@@ -43,11 +43,11 @@ except ValueError:
     VISIT_COUNT = 10
 
 # Configuration
-WAIT_MIN = 5  # Minimum wait time in seconds
-WAIT_MAX = 10  # Maximum wait time in seconds
+WAIT_MIN = 9  # Minimum wait time in seconds
+WAIT_MAX = 29  # Maximum wait time in seconds
 
 # Path to your WebDriver (update with the path to your chromedriver)
-CHROMEDRIVER_PATH = "chromedriver"
+CHROMEDRIVER_PATH = "/usr/bin/chromedriver"
 
 # Main visiting loop
 for i in range(VISIT_COUNT):
@@ -57,16 +57,17 @@ for i in range(VISIT_COUNT):
     options = webdriver.ChromeOptions()
     options.add_argument("--no-sandbox")
     options.add_argument("--disable-dev-shm-usage")
-    options.add_argument("--start-maximized")
     options.add_argument("--disable-blink-features=AutomationControlled")
+    options.add_argument("--headless")
+    options.add_argument("--dissable-gpu")
 
     if proxy_address:
         proxy = Proxy()
         proxy.proxy_type = ProxyType.MANUAL
         proxy.http_proxy = proxy_address
         proxy.ssl_proxy = proxy_address
-        proxy.add_to_capabilities(webdriver.DesiredCapabilities.CHROME)
-        options.add_argument(f"--proxy-server={proxy_address}")
+        capabilities = webdriver.DesiredCapabilities.CHROME
+        proxy.to_capabilities()  # Corrected line
 
     driver_service = Service(CHROMEDRIVER_PATH)
     driver = webdriver.Chrome(service=driver_service, options=options)
